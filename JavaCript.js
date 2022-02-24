@@ -61,7 +61,7 @@ function Login () {
         LoadIng(true,'正在登陆',220)
 
         var url = './Login.php'
-        var data = 'Account=' + Account + '&VerificationCode =' + VerificationCode
+        var data = 'Account=' + Account + '&VerificationCode=' + VerificationCode
 
         $.ajax({
             type: 'post',
@@ -96,37 +96,20 @@ function Login () {
 }
 
 function SetMoney (Money) {
-    document.getElementById('Money').innerHTML = "<label class='mdui-textfield-label'>投喂🐟数</label>
-<input class='mdui-textfield-input' type='number' value='" + Money + "' id='Money_input'>
-</div>"
+    document.getElementById('Money').innerHTML = "<label class='mdui-textfield-label'>投喂🐟数</label><input class='mdui-textfield-input' type='number' value='" + Money + "' id='Money_input'></div>"
 }
 
 function SetMonth (Month) {
-    document.getElementById('Month').innerHTML = "<label class='mdui-textfield-label'>投喂月数</label>
-<input class='mdui-textfield-input' type='number' value='" + Month + "' id='Month_input' disabled></input>
-"
+    document.getElementById('Month').innerHTML = "<label class='mdui-textfield-label'>投喂月数</label><input class='mdui-textfield-input' type='number' value='" + Month + "' id='Month_input' disabled></input>"
 }
 
 function SetPayType (PayType) {
-    document.getElementById('PayType').innerHTML = "<input class='mdui-textfield-input' type='text' style='display:none' value='" + PayType + "' id='PayType_input'></input>
-"
+    document.getElementById('PayType').innerHTML = "<input class='mdui-textfield-input' type='text' style='display:none' value='" + PayType + "' id='PayType_input'></input>"
 
     if (PayType == 0) {
-        document.getElementById('PayType_alipay').innerHTML = "
-<label class='mdui-radio'>
-    <input type='radio' onclick='SetPayType(1)'>
-    <i class='mdui-radio-icon'></i>
-    蓝色空投(支付宝)
-</label>
-"
+        document.getElementById('PayType_alipay').innerHTML = "<label class='mdui-radio'><input type='radio' onclick='SetPayType(1)'><i class='mdui-radio-icon'></i>蓝色空投(支付宝)</label>"
     } else {
-        document.getElementById('PayType_wxpay_qr').innerHTML = "
-<label class='mdui-radio'>
-    <input type='radio' onclick='SetPayType(0)'>
-    <i class='mdui-radio-icon'></i>
-    绿色空投(微信)
-</label>
-"
+        document.getElementById('PayType_wxpay_qr').innerHTML = "<label class='mdui-radio'><input type='radio' onclick='SetPayType(0)'><i class='mdui-radio-icon'></i>绿色空投(微信)</label>"
     }
 }
 
@@ -140,11 +123,26 @@ function Pay () {
             position: 'top',
             message: '你不能投喂0条🐟给岛主会饿死的'
         })
-    } else if (Money 
-<5) { mdui.snackbar({ position:'top' , message: Money +'条🐟吃不饱的岛主会饿死的' }) } else { LoadIng(true,'正在重定向到空投网关' ,220) if (PayType== 0) { PayType='wxpay_qr' ; } else if (PayType== 1) { PayType='alipay' ; } var form=$('<form method="post"></form>' ); form.append(`<input type="hidden" name="Money" value="${Money}">
+    } else if (Money < 5) {
+        mdui.snackbar({
+            position: 'top',
+            message: Money + '条🐟吃不饱的岛主会饿死的'
+        })
+    } else {
+        LoadIng(true,'正在重定向到空投网关',220)
+
+        if (PayType == 0) {
+            PayType = 'wxpay_qr';
+        } else if (PayType == 1) {
+            PayType = 'alipay';
+        }
+
+        var form = $('<form method="post"></form>');
+        form.append(`
+        <input type="hidden" name="Money" value="${Money}">
         <input type="hidden" name="Month" value="${Month}">
-    <input type="hidden" name="PayType" value="${PayType}">
-    `);
+        <input type="hidden" name="PayType" value="${PayType}">
+        `);
         $(document.body).append(form);
         form.submit();
     }
@@ -158,7 +156,7 @@ function WXPayScanning (CheckID) {
         success:function(result) {
             var status = result.status
             var ID = result.ID
-            if (status == 0 &&ID == CheckID) {
+            if (status == 0 && ID == CheckID) {
                 window.location.replace('./');
             }
         }
@@ -170,10 +168,10 @@ function WXPayScanning (CheckID) {
 function GetCloudCode (Type) {
 	LoadIng(true,'正在呼唤岛主获取口令',220)
 
-	var form = $('<form method="post"></form>
-');
+	var form = $('<form method="post"></form>');
 	form.append(`
-	<input type="hidden" name="Type" value="GetCloudCode">`);
+	<input type="hidden" name="Type" value="GetCloudCode">
+	`);
 	$(document.body).append(form);
 	form.submit();
 }
